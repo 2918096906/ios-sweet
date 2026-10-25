@@ -4,6 +4,9 @@
  #define TOUCH_SE_PA      0x00a98000u
 -#define TOUCH_GCC_PA     0x00100000u
 +#define TOUCH_GCC_PA     0x00178000u
+@@ -26,1 +26,1 @@
+-#define TOUCH_NORTH_PA   0x03900000u /* DT TLMM + NORTH (0x500000) */
++#define TOUCH_NORTH_PA   0x17900000u /* SDM845 TLMM */
 @@ -27,2 +27,2 @@
  #define TOUCH_GCC_VOTE   0x5200cu
 -#define TOUCH_RCG       0x1815cu    /* wrapper1 LOCAL S1 = global SE7 */
