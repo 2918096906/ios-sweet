@@ -711,7 +711,7 @@
 +		goto out;
 +	}
 +	printf("SWEET TOUCH: TLMM reset=%#x irq=%#x vdd90=%#x; L11C must be powered by firmware\n",
-+	    touch_rd(st.gpio, TOUCH_GPIO_IO(8)), touch_rd(st.gpio, TOUCH_GPIO_IO(31)),
++	    touch_rd(st.gpio, TOUCH_GPIO_IO(8)), touch_rd(st.gpio, TOUCH_GPIO_IO(9)),
 +	    touch_rd(st.gpio, TOUCH_GPIO_IO(90)));
 +	touch_gpio(6, 1, 0, 0, false); /* qup11 SDA/SCL, 2 mA, no internal pull */
 +	touch_gpio(7, 1, 0, 0, false);
@@ -724,12 +724,12 @@
 +	int ge = touch_read(0x5d, 0x4022, true, gid, sizeof(gid));
 +	printf("SWEET TOUCH: probe 0x5d err=%d pid=%02x%02x%02x%02x fw=%02x.%02x.%02x.%02x irq=%#x\n",
 +	    ge, gid[0], gid[1], gid[2], gid[3], gid[8], gid[9], gid[10], gid[11], st.irq_status);
-+	int fe1 = touch_read(0x49, 0xa3, false, &fid1, 1);
-+	int fe2 = touch_read(0x49, 0x9f, false, &fid2, 1);
++	int fe1 = touch_read(0x38, 0xa3, false, &fid1, 1);
++	int fe2 = touch_read(0x38, 0x9f, false, &fid2, 1);
 +	printf("SWEET TOUCH: probe 0x38 err=%d/%d chip-id=%02x:%02x irq=%#x\n",
 +	    fe1, fe2, fid1, fid2, st.irq_status);
 +	bool goodix = !ge && gid[0] == '9' && gid[1] == '8' && gid[2] == '9' && gid[3] == '6';
-+	bool fts = !fe1 && !fe2 && fid1 || fid2;
++	bool fts = !fe1 && !fe2 && fid1 == 0x54 && fid2 == 0x52;
 +	if (st.dead || goodix == fts) {
 +		printf("SWEET TOUCH: no unique supported IC (goodix=%d fts=%d dead=%d); stopping\n",
 +		    goodix, fts, st.dead);
@@ -741,7 +741,7 @@
 +	unsigned errors = 0, ticks = 0;
 +	while (!st.dead) {
 +		/* Optional IRQ hint still reads every 100ms, and always while down. */
-+		if (!st.irq_hint || st.active || !(touch_rd(st.gpio, TOUCH_GPIO_IO(31)) & 1u) ||
++		if (!st.irq_hint || st.active || !(touch_rd(st.gpio, TOUCH_GPIO_IO(9)) & 1u) ||
 +		    (++ticks % 10u) == 0) {
 +			int err = st.kind == TOUCH_GOODIX ? touch_goodix() : touch_focaltech();
 +			if (err) {
