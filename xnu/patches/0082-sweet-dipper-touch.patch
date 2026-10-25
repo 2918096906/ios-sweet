@@ -1,0 +1,16 @@
+--- a/bsd/dev/sweet_touch.c
++++ b/bsd/dev/sweet_touch.c
+@@ -300,13 +300,13 @@
+	int ge = touch_read(0x5d, 0x4022, true, gid, sizeof(gid));
+	printf("SWEET TOUCH: probe 0x5d err=%d pid=%02x%02x%02x%02x fw=%02x.%02x.%02x.%02x irq=%#x\n",
+	    ge, gid[0], gid[1], gid[2], gid[3], gid[8], gid[9], gid[10], gid[11], st.irq_status);
+-	int fe1 = touch_read(0x38, 0xa3, false, &fid1, 1);
+-	int fe2 = touch_read(0x38, 0x9f, false, &fid2, 1);
++	int fe1 = touch_read(0x49, 0xa3, false, &fid1, 1);
++	int fe2 = touch_read(0x49, 0x9f, false, &fid2, 1);
+	printf("SWEET TOUCH: probe 0x38 err=%d/%d chip-id=%02x:%02x irq=%#x\n",
+	    fe1, fe2, fid1, fid2, st.irq_status);
+	bool goodix = !ge && gid[0] == '9' && gid[1] == '8' && gid[2] == '9' && gid[3] == '6';
+-	bool fts = !fe1 && !fe2 && fid1 == 0x54 && fid2 == 0x52;
++	bool fts = !fe1 && !fe2 && (fid1 || fid2);
+	if (st.dead || goodix == fts) {
