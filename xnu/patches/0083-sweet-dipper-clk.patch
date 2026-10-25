@@ -1,22 +1,22 @@
 --- a/bsd/dev/sweet_touch.c
 +++ b/bsd/dev/sweet_touch.c
-@@ -24,2 +24,2 @@
+@@ -25,2 +25,2 @@
  #define TOUCH_SE_PA      0x00a98000u
 -#define TOUCH_GCC_PA     0x00100000u
 +#define TOUCH_GCC_PA     0x00178000u
-@@ -26,1 +26,1 @@
+@@ -27,1 +27,1 @@
 -#define TOUCH_NORTH_PA   0x03900000u /* DT TLMM + NORTH (0x500000) */
 +#define TOUCH_NORTH_PA   0x17900000u /* SDM845 TLMM */
-@@ -27,2 +27,2 @@
+@@ -28,2 +28,2 @@
  #define TOUCH_GCC_VOTE   0x5200cu
 -#define TOUCH_RCG       0x1815cu    /* wrapper1 LOCAL S1 = global SE7 */
 +#define TOUCH_RCG       0x18738u    /* wrapper1 LOCAL S1 = global SE7 */
-@@ -128,3 +128,3 @@
+@@ -126,3 +126,3 @@
  	/* Vote on only wrapper1 and SE7, preserving other clock users. */
 -	uint32_t mask = (0x0fu << 18) | (1u << 23);
 +	uint32_t mask = (1u << 20) | (1u << 21) | (1u << 28);
  	touch_wr(st.gcc, TOUCH_GCC_VOTE, touch_rd(st.gcc, TOUCH_GCC_VOTE) | mask);
-@@ -151,2 +151,2 @@
+@@ -150,2 +150,2 @@
 -	const uint32_t branches[] = {0x18004, 0x18008, 0x1800c, 0x18010, 0x18144};
 +	const uint32_t branches[] = {0x1800c, 0x18010, 0x18734};
  	for (unsigned i = 0; i < sizeof(branches) / sizeof(branches[0]); ++i) {
