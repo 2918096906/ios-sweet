@@ -64,21 +64,21 @@
 -	touch_gpio(8, 0, 3, 3, true);  /* release reset; no reset-low pulse */
 -	touch_wait(300);
 +	/* Keep the IC in reset while its rails settle; IRQ stays an input. */
-+	touch_gpio(9, 0, 3, 3, false, false); /* IRQ input, 8 mA, pull-up */
-+	touch_gpio(8, 0, 3, 3, true, false);
-+	int power_error = sweet_rpmh_vreg_enable("ldoc11", 3200);
++	touch_gpio(31, 0, 3, 3, false, false); /* dipper IRQ (TLMM 31), 8 mA, pull-up */
++	touch_gpio(32, 0, 3, 3, true, false); /* dipper RST (TLMM 32) */
++	int power_error = 0; /* dipper: skip RPMh L11C, assume ABL-pre-powered rails */
 +	if (power_error) {
 +		printf("SWEET TOUCH: L11C RPMh enable failed %d; probes skipped\n", power_error);
 +		goto out;
 +	}
-+	touch_gpio(90, 0, 0, 0, true, true); /* board digital power enable */
++	/* dipper: LDO-powered, ABL pre-enables; no GPIO power rail */
 +	touch_wait(10); /* conservative rail settling; not a DT timing value */
-+	touch_gpio(6, 1, 0, 0, false, false); /* qup11 SDA/SCL, 2 mA */
-+	touch_gpio(7, 1, 0, 0, false, false);
++	touch_gpio(45, 1, 0, 0, false, false); /* dipper SE6 SDA (TLMM 45) */
++	touch_gpio(46, 1, 0, 0, false, false); /* dipper SE6 SCL (TLMM 46) */
 +	/* Vendor GT9896 dev_confirm: reset low 2 ms, then high. */
-+	touch_gpio(8, 0, 3, 3, true, false);
++	touch_gpio(32, 0, 3, 3, true, false); /* dipper RST (TLMM 32) */
 +	touch_wait(2);
-+	touch_gpio(8, 0, 3, 3, true, true);
++	touch_gpio(32, 0, 3, 3, true, true);
 +	touch_wait(300); /* exceeds vendor 5 ms test + 95 ms post-test wait */
  	uint8_t gid[12] = {0}, fid1 = 0, fid2 = 0;
  	int ge = touch_read(0x5d, 0x4022, true, gid, sizeof(gid));
